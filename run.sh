@@ -10,6 +10,19 @@ pause() { printf "\nTekan Enter untuk kembali ke menu..."; read -r; }
 any_fpm_running() { port_in_use "${FPM_PORT[8.4]}" || port_in_use "${FPM_PORT[8.3]}" || port_in_use "${FPM_PORT[8.2]}" || port_in_use "${FPM_PORT[7.4]}" || port_in_use "${FPM_PORT[5.6]}"; }
 on_off() { if [ "$1" = "1" ]; then echo "[ON]"; else echo "[OFF]"; fi; }
 
+current_active_php() {
+    local port
+    port=$(grep -oE '[0-9]{4}' "$ROOT/conf/nginx/default_php.conf" 2>/dev/null || echo "")
+    case "$port" in
+        9056) echo "5.6" ;;
+        9074) echo "7.4" ;;
+        9082) echo "8.2" ;;
+        9083) echo "8.3" ;;
+        9084) echo "8.4" ;;
+        *) echo "${DEFAULT_PHP_VERSION:-unknown}" ;;
+    esac
+}
+
 # ---- PATH management (macOS: ~/.zshrc & ~/.bash_profile) ----
 path_add() {
     local f
@@ -44,18 +57,20 @@ path_remove() {
 
 main_menu() {
     clear
+    load_env
     echo "======================================================="
     echo "          MyDevEnv-mac - Portable Dev Control Panel"
     echo "======================================================="
     echo
-    local s_nginx s_mdb s_php
+    local s_nginx s_mdb s_php active_php
     s_nginx=$(on_off "$(port_in_use 8080 && echo 1 || echo 0)")
     s_mdb=$(on_off "$(port_in_use "$MARIADB_PORT" && echo 1 || echo 0)")
     s_php=$(on_off "$(any_fpm_running && echo 1 || echo 0)")
+    active_php=$(current_active_php)
     echo "Status Services:"
     echo "  Nginx   : $s_nginx (Port 8080, 8056, 8074, 8082, 8083, 8084)"
     echo "  MariaDB : $s_mdb (Port $MARIADB_PORT)"
-    echo "  PHP-FPM : $s_php (Default Port 8080: PHP $DEFAULT_PHP_VERSION)"
+    echo "  PHP-FPM : $s_php (Default Port 8080: PHP $active_php)"
     echo
     echo "-------------------------------------------------------"
     echo " [1] Start All Services (Background)"
@@ -108,11 +123,14 @@ action_restart() {
 
 submenu_switch_php() {
     clear
+    load_env
+    local active_php
+    active_php=$(current_active_php)
     echo "======================================================="
     echo "              Switch Default PHP Version"
     echo "======================================================="
     echo
-    echo "PHP aktif saat ini pada Port 8080: PHP $DEFAULT_PHP_VERSION"
+    echo "PHP aktif saat ini pada Port 8080: PHP $active_php"
     echo
     echo " [1] PHP 5.6 (Port 8056)"
     echo " [2] PHP 7.4 (Port 8074)"
