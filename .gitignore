@@ -1,0 +1,22 @@
+# Environment & Local Config
+.env
+!.env.example
+
+# Database data & archives
+/bin/
+/tmp/
+/archives/
+
+# Logs & PIDs
+/logs/
+*.log
+*.pid
+
+# Webroot default files
+/www/*
+!/www/index.php
+
+# OS & Editor files
+.DS_Store
+.idea/
+.vscode/
