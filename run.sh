@@ -28,19 +28,19 @@ path_add() {
     local f
     for f in "$HOME/.zshrc" "$HOME/.bash_profile"; do
         [ -f "$f" ] || touch "$f"
+        # Hapus entri lama jika ada agar formatnya ter-update
         if grep -qs "MYDEVENV-MAC PATH BEGIN" "$f"; then
-            echo "[SKIP] $f sudah berisi entri PATH mydevenv-mac."
-        else
-            cat >> "$f" <<EOF
+            sed -i '' '/# MYDEVENV-MAC PATH BEGIN/,/# MYDEVENV-MAC PATH END/d' "$f"
+        fi
+        cat >> "$f" <<EOF
 
 # MYDEVENV-MAC PATH BEGIN
-export PATH="\$PATH:$ROOT/bin:$(mdb_bin_dir)"
+export PATH="$ROOT/bin:\$(brew --prefix mariadb 2>/dev/null || echo /opt/homebrew/opt/mariadb)/bin:\$PATH"
 # MYDEVENV-MAC PATH END
 EOF
-            echo "[OK] PATH mydevenv-mac ditambahkan ke $f"
-        fi
+        echo "[OK] PATH mydevenv-mac ditambahkan di awal (prioritas) pada $f"
     done
-    echo "Catatan: buka jendela Terminal baru agar efek terasa."
+    echo "Catatan: buka jendela Terminal baru atau jalankan: source ~/.zshrc"
 }
 
 path_remove() {
