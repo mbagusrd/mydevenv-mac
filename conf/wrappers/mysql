@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# mysql — MariaDB client CLI (socket lokal project)
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT/common.sh"
+load_env
+exec "$(mdb_bin_dir)/mariadb" --socket="$(mdb_socket)" -u root ${MARIADB_ROOT_PASSWORD:+-p"${MARIADB_ROOT_PASSWORD}"} "$@"

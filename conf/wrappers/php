@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# php — jalankan PHP versi default sesuai .env
+source "$(cd "$(dirname "$0")/.." && pwd)/common.sh" 2>/dev/null || source "$(cd "$(dirname "$0")" && pwd)/common.sh"
+load_env
+exec "$(brew_prefix)/opt/php@${DEFAULT_PHP_VERSION}/bin/php" "$@"

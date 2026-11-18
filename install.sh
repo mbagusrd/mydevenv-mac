@@ -79,6 +79,16 @@ if [ ! -f "$ROOT/bin/composer.phar" ]; then
     curl -fsSL https://getcomposer.org/composer.phar -o "$ROOT/bin/composer.phar"
 fi
 
+# ---------- 4b. Wrapper CLI (php, composer, mysql) ----------
+# bin/ tidak di-track git; wrapper dibuat ulang dari template conf/wrappers/.
+# Template dipakai hanya jika wrapper belum ada, agar edit lokal tidak tertimpa.
+for w in php composer mysql; do
+    if [ ! -f "$ROOT/bin/$w" ] && [ -f "$ROOT/conf/wrappers/$w" ]; then
+        install -m 0755 "$ROOT/conf/wrappers/$w" "$ROOT/bin/$w"
+        echo "--> Wrapper dibuat: bin/$w (dari conf/wrappers/$w)"
+    fi
+done
+
 # ---------- 5. Konfigurasi Nginx (di dalam project) ----------
 echo "--> Membuat konfigurasi Nginx ..."
 NGINX_FASTCGI_PARAMS="$BP/etc/nginx/fastcgi_params"

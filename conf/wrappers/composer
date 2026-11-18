@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# composer — Composer CLI dengan PHP default sesuai .env
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT/common.sh"
+load_env
+exec "$(brew_prefix)/opt/php@${DEFAULT_PHP_VERSION}/bin/php" "$ROOT/bin/composer.phar" "$@"

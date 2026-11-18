@@ -2,9 +2,9 @@
 # common.sh — shared helpers untuk semua script mydevenv-mac.
 # Di-sourced oleh install.sh / start.sh / stop.sh / status.sh / switch-php.sh.
 
-# Selalu berdiri di root project
+# Root project (path absolut dipakai semua helper; TIDAK melakukan cd,
+# supaya wrapper bin/php & bin/composer tetap berjalan di cwd pemanggil)
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
-cd "$ROOT"
 
 # ---- Konstanta port (disamakan dengan varian Windows) ----
 # Web: 8080 default (port 80 butuh root di macOS), 8056/8074/8082/8083/8084 per versi.
